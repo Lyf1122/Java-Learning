@@ -1,7 +1,7 @@
 package org.example.patterns;
 
 import org.example.patterns.adapter.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PatternDesignClient {
     @Test
