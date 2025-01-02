@@ -50,8 +50,18 @@ class UserContextTest {
   }
 
   @Test
-  public void testCleanUp() {
-
+  public void testCleanUp() throws InterruptedException {
+    Thread t = new Thread(
+        () -> {
+          UserContext.setUserId(1);
+          assertEquals(1, UserContext.getUserId());
+          // clear
+          UserContext.clear();
+          assertNull(UserContext.getUserId());
+        }
+    );
+    t.start();
+    t.join();
   }
 
 }
