@@ -11,7 +11,7 @@
 
 
 
-    <artifactId>design-pattern</artifactId>
+    <artifactId>code-generate</artifactId>
 
     <dependencies>
 
@@ -36,10 +36,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-            <scope>provided</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 
