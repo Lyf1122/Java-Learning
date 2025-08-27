@@ -1,15 +1,17 @@
 package org.example.async;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.Future;
 
-@Slf4j
 @Service
 public class AsyncServiceImpl implements AsyncService{
+
+  private final static Logger log = LoggerFactory.getLogger(AsyncServiceImpl.class);
 
   @Async
   @Override

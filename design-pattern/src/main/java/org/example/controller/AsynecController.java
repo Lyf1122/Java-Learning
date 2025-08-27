@@ -1,7 +1,8 @@
 package org.example.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.async.AsyncService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +13,10 @@ import java.util.concurrent.Future;
 
 @RestController
 @EnableAsync
-@Slf4j
 public class AsynecController {
+
+  private final static Logger log = LoggerFactory.getLogger(AsynecController.class);
+
   @Autowired
   private AsyncService asyncService;
 
