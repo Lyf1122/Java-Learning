@@ -29,4 +29,30 @@ class SolutionTest {
     solution.moveZeroes(a);
     System.out.println(Arrays.toString(a));
   }
+
+  @Test
+  public void test4() {
+    int[] nums = {-1,0,1,2,-1,-4,3};
+    List<List<Integer>> lists = solution.threeSum(nums);
+  }
+
+  @Test
+  public void test5() {
+    String s = "au";
+    int i = solution.lengthOfLongestSubstring(s);
+  }
+
+  @Test
+  public void test6() {
+    String s = "abba";
+    int i = solution.lengthOfLongestSubstring2(s);
+    System.out.println(i);
+  }
+
+  @Test
+  public void test7() {
+    String s = "cbaebabacd", p = "abc";
+    List<Integer> anagrams = solution.findAnagrams(s, p);
+    assertEquals(2, anagrams.size());
+  }
 }

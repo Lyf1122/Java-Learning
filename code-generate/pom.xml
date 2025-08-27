@@ -8,9 +8,6 @@
         <artifactId>java-learing</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
-
-
     <artifactId>code-generate</artifactId>
 
     <dependencies>

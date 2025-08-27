@@ -97,4 +97,133 @@ class Solution {
     return maxArea;
   }
 
+  public List<List<Integer>> threeSum(int[] nums) {
+    int n = nums.length;
+    List<List<Integer>> res = new LinkedList<>();
+    if (n < 3)  return res;
+    Arrays.sort(nums);
+    for (int i = 0; i < n-2; i++) {
+      if (nums[i] > 0)  continue;
+      if (i > 0 && nums[i] == nums[i-1]) continue;
+      int left = i+1; int right = n-1;
+      while (left < right) {
+        int sum = nums[i] + nums[left] + nums[right];
+        if (sum == 0) {
+          res.add(Arrays.asList(nums[i], nums[left], nums[right]));
+          // 跳过重复的元素
+          while (left < right && nums[left] == nums[left+1]) left++;
+          while (left < right && nums[right] == nums[right-1]) right--;
+          left++; right--;
+        }
+        if (sum < 0) {
+          left++;
+        }
+        if (sum > 0) {
+          right--;
+        }
+      }
+    }
+    log.info(JsonUtil.renderWithPrettyPrinter(res));
+    return res;
+  }
+
+  public int trap(int[] height) {
+    int n = height.length;
+    int[] leftMax = new int[n];
+    int[] rightMax = new int[n];
+    leftMax[0] = height[0]; rightMax[n-1] = height[n-1];
+    for (int i = 1; i < n; i++) {
+      leftMax[i] = Math.max(leftMax[i-1], height[i]);
+    }
+    for (int i = n-2; i >= 0; i--) {
+      rightMax[i] = Math.max(rightMax[i+1], height[i]);
+    }
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+      ans += Math.min(leftMax[i], rightMax[i]) - height[i];
+    }
+    return ans;
+  }
+
+  public int lengthOfLongestSubstring(String s) {
+    int n = s.length();
+    if (n < 2) return n;
+    int ans = 1;
+    char[] charArray = s.toCharArray();
+    Set<Character> set = new HashSet<>();
+    for (int i = 0; i < n; i++) {
+      set.add(charArray[i]);
+      for (int j = i + 1; j < n; j++) {
+        if (set.contains(charArray[j])) {
+          ans = Math.max(ans, set.size());
+          log.info(JsonUtil.renderWithPrettyPrinter(set));
+          break;
+        } else  {
+          set.add(charArray[j]);
+        }
+      }
+      ans = Math.max(ans, set.size());
+      set.clear();
+    }
+    log.info("ans: {}", ans);
+    return ans;
+  }
+
+  public int lengthOfLongestSubstring2(String s) {
+    int n = s.length();int ans = 0;
+    int left = 0;int right = 0;
+    if (n < 2) return n;
+    Map<Character, Integer> map = new HashMap<>();
+    while (right < n) {
+      if (map.containsKey(s.charAt(right)) && (map.get(s.charAt(right)) > left)) {
+        left = map.get(s.charAt(right)) + 1;
+      }
+      map.put(s.charAt(right), right);
+      ans = Math.max(ans, right - left + 1);
+      right++;
+    }
+    return ans;
+  }
+
+  public List<Integer> findAnagrams(String s, String p) {
+    List<Integer> ans = new ArrayList<>();
+    int n = s.length(); int m = p.length();
+    if (n < m) return ans;
+    int[] sFreq = new int[26];
+    int[] pFreq = new int[26];  // 储存p中各个字符出现的次数
+    // set up pFreq
+    for (char c : p.toCharArray()) {
+      pFreq[c - 'a']++;
+    }
+    // set up sFreq (the longer one)
+    for (int i = 0; i < m; i++) {
+      // 从i开始 m个字符的频率
+      sFreq[s.charAt(i) - 'a']++;
+    }
+    // 初始窗口
+    if (Arrays.equals(sFreq,  pFreq)) {
+      ans.add(0);
+    }
+    //  滑动窗口
+    for (int i = 1; i <= n - m; i++) {
+      // 移除窗口左端的字符
+      sFreq[s.charAt(i - 1) - 'a']--;
+      // 添加窗口右端的新字符
+      sFreq[s.charAt(i + m - 1) - 'a']++;
+      // 检查当前窗口频率是否匹配
+      if (Arrays.equals(pFreq, sFreq)) {
+        ans.add(i);
+      }
+    }
+    return ans;
+  }
+
+  static boolean isAnagram(String a, String b) {
+    char[] arrayA = a.toCharArray();
+    Arrays.sort(arrayA);
+    char[] arrayB = b.toCharArray();
+    Arrays.sort(arrayB);
+    return Arrays.equals(arrayA, arrayB);
+  }
+
 }
