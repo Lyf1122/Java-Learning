@@ -62,4 +62,11 @@ class SolutionTest {
     int i = solution.subarraySum(nums, 2);
     System.out.println(i);
   }
+
+  @Test
+  public void test9() {
+    int[][] intervals = {{1,4},{0,6}};
+    int[][] merge = solution.merge(intervals);
+    assertEquals(1, merge.length);
+  }
 }

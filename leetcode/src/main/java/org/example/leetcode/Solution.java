@@ -290,4 +290,29 @@ class Solution {
     return maxPreSum;
   }
 
+  public int[][] merge(int[][] intervals) {
+    int n = intervals.length;
+    if (n < 2) {
+      return intervals;
+    }
+    // 按照区间起始点排序
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+    List<int[]> merged = new ArrayList<>();
+    int[] current = intervals[0];
+    for (int i = 1; i < n; i++) {
+      if (intervals[i][0] <= current[1]) {
+        // 重叠，合并区间
+        current[1] = Math.max(current[1], intervals[i][1]);
+      } else {
+        // 不重叠，添加当前区间并更新
+        merged.add(current);
+        current = intervals[i];
+      }
+    }
+    merged.add(current); // 添加最后一个区间
+
+    // 直接转换为int[][]
+    return merged.toArray(new int[merged.size()][]);
+  }
+
 }
