@@ -226,4 +226,68 @@ class Solution {
     return Arrays.equals(arrayA, arrayB);
   }
 
+  public int subarraySum(int[] nums, int k) {
+    int n =  nums.length;
+    // 创建前序和数组
+    int[] prefixSum = new int[n + 1];
+    prefixSum[0] = 0;
+    for (int i = 1; i <= n; i++) {
+      prefixSum[i] = prefixSum[i - 1] + nums[i - 1];
+    }
+
+    int ans = 0;
+    Map<Integer, Integer> map = new HashMap<>();
+    for(int prefix: prefixSum) {
+      int target = prefix - k;
+      if (map.containsKey(target)) {
+        ans += map.get(target);
+      }
+      map.put(prefix, map.getOrDefault(prefix, 0) + 1);
+    }
+    return ans;
+  }
+
+  public int[] maxSlidingWindow(int[] nums, int k) {
+    int n = nums.length;
+    int[] res = new int[n - k + 1];
+    if (nums.length == 0 || k < 0) {
+      return res;
+    }
+
+    Deque<Integer> deque = new LinkedList<>();
+    for (int i = 0; i < n; i++) {
+      // 移除不在窗口的值，也就是窗口向右移动
+      while (!deque.isEmpty() && deque.peek() < i - k + 1) {
+        deque.poll();
+      }
+      while (!deque.isEmpty() && nums[deque.getLast()] < nums[i]) {
+        deque.pollLast();
+      }
+      // 将当前索引加入到队列尾部
+      deque.offer(i); // equal to offerLast
+      // 如果窗口已经形成（i >= k-1），将队首对应的值加入结果
+      if (i >= k - 1) {
+        res[i - k + 1] = nums[deque.peek()];
+      }
+    }
+    return res;
+  }
+
+  public int maxSubArray(int[] nums) {
+    int n = nums.length;
+    int[] preSum = new int[n + 1];
+    int minPreSum = 0; int maxPreSum = nums[0];
+    preSum[0] = 0;
+    for (int i = 1; i <= n; i++) {
+      preSum[i] = preSum[i - 1] + nums[i - 1];
+    }
+
+    for (int i = 1; i <= n; i++) {
+      int curSum = preSum[i] - minPreSum;
+      maxPreSum = Math.max(curSum, maxPreSum);
+      minPreSum = Math.min(preSum[i], minPreSum);
+    }
+    return maxPreSum;
+  }
+
 }

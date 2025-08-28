@@ -55,4 +55,11 @@ class SolutionTest {
     List<Integer> anagrams = solution.findAnagrams(s, p);
     assertEquals(2, anagrams.size());
   }
+
+  @Test
+  public void test8() {
+    int[] nums = new int[]{1, 1, 1};
+    int i = solution.subarraySum(nums, 2);
+    System.out.println(i);
+  }
 }
