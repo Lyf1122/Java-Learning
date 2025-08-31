@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 class Solution {
 
@@ -313,6 +314,51 @@ class Solution {
 
     // 直接转换为int[][]
     return merged.toArray(new int[merged.size()][]);
+  }
+
+  public void rotate(int[] nums, int k) {
+    int n = nums.length;
+    int[] temp = Arrays.copyOf(nums, n);
+    for (int i = 0; i < n; i++) {
+      if (i + k < n) {
+        nums[i + k] = temp[i];
+      } else {
+        nums[(i + k) % n] = temp[i];
+      }
+    }
+    log.info(JsonUtil.render(nums));
+  }
+
+  public int[] productExceptSelf(int[] nums) {
+    int n = nums.length;
+    int [] left = new int[n];  left[0] = 1;
+    for (int i = 1; i < n; i++) {
+      left[i] = left[i - 1] * nums[i-1];
+    }
+    int [] right = new int[n];  right[n-1] = 1;
+    for (int i = n-2; i >= 0; i--) {
+      right[i] = right[i+1] * nums[i+1];
+    }
+    int[] ans = new int[n];
+    for (int i = 0; i < n; i++) {
+      ans[i] = left[i] * right[i];
+    }
+    log.info(JsonUtil.render(ans));
+    return ans;
+  }
+
+  public int firstMissingPositive(int[] nums) {
+    Arrays.sort(nums);
+    int[] array = Arrays.stream(nums)
+      .filter(i -> i > 0)
+      .distinct()
+      .toArray();
+    for (int i = 0; i < array.length; i++) {
+      if (array[i] != i + 1) {
+        return i + 1;
+      }
+    }
+    return array.length + 1;
   }
 
 }
