@@ -55,4 +55,39 @@ class SolutionTest {
     List<Integer> anagrams = solution.findAnagrams(s, p);
     assertEquals(2, anagrams.size());
   }
+
+  @Test
+  public void test8() {
+    int[] nums = new int[]{1, 1, 1};
+    int i = solution.subarraySum(nums, 2);
+    System.out.println(i);
+  }
+
+  @Test
+  public void test9() {
+    int[][] intervals = {{1,4},{0,6}};
+    int[][] merge = solution.merge(intervals);
+    assertEquals(1, merge.length);
+  }
+
+  @Test
+  public void test10() {
+    int[] nums = new int[]{1,2,3,4,5,6,7};
+    solution.rotate(nums, 3);
+//    System.out.println(Arrays.toString(nums));
+  }
+
+  @Test
+  public void test11() {
+    int[] nums = new int[]{-1,1,0,-3,3};
+    solution.productExceptSelf(nums);
+  }
+
+  @Test
+  public void test12() {
+    int[] nums = new int[]{1,2,0};
+    int i = solution.firstMissingPositive(nums);
+    assertEquals(3, i);
+  }
+
 }

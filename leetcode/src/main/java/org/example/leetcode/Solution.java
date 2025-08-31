@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 class Solution {
 
@@ -224,6 +225,140 @@ class Solution {
     char[] arrayB = b.toCharArray();
     Arrays.sort(arrayB);
     return Arrays.equals(arrayA, arrayB);
+  }
+
+  public int subarraySum(int[] nums, int k) {
+    int n =  nums.length;
+    // 创建前序和数组
+    int[] prefixSum = new int[n + 1];
+    prefixSum[0] = 0;
+    for (int i = 1; i <= n; i++) {
+      prefixSum[i] = prefixSum[i - 1] + nums[i - 1];
+    }
+
+    int ans = 0;
+    Map<Integer, Integer> map = new HashMap<>();
+    for(int prefix: prefixSum) {
+      int target = prefix - k;
+      if (map.containsKey(target)) {
+        ans += map.get(target);
+      }
+      map.put(prefix, map.getOrDefault(prefix, 0) + 1);
+    }
+    return ans;
+  }
+
+  public int[] maxSlidingWindow(int[] nums, int k) {
+    int n = nums.length;
+    int[] res = new int[n - k + 1];
+    if (nums.length == 0 || k < 0) {
+      return res;
+    }
+
+    Deque<Integer> deque = new LinkedList<>();
+    for (int i = 0; i < n; i++) {
+      // 移除不在窗口的值，也就是窗口向右移动
+      while (!deque.isEmpty() && deque.peek() < i - k + 1) {
+        deque.poll();
+      }
+      while (!deque.isEmpty() && nums[deque.getLast()] < nums[i]) {
+        deque.pollLast();
+      }
+      // 将当前索引加入到队列尾部
+      deque.offer(i); // equal to offerLast
+      // 如果窗口已经形成（i >= k-1），将队首对应的值加入结果
+      if (i >= k - 1) {
+        res[i - k + 1] = nums[deque.peek()];
+      }
+    }
+    return res;
+  }
+
+  public int maxSubArray(int[] nums) {
+    int n = nums.length;
+    int[] preSum = new int[n + 1];
+    int minPreSum = 0; int maxPreSum = nums[0];
+    preSum[0] = 0;
+    for (int i = 1; i <= n; i++) {
+      preSum[i] = preSum[i - 1] + nums[i - 1];
+    }
+
+    for (int i = 1; i <= n; i++) {
+      int curSum = preSum[i] - minPreSum;
+      maxPreSum = Math.max(curSum, maxPreSum);
+      minPreSum = Math.min(preSum[i], minPreSum);
+    }
+    return maxPreSum;
+  }
+
+  public int[][] merge(int[][] intervals) {
+    int n = intervals.length;
+    if (n < 2) {
+      return intervals;
+    }
+    // 按照区间起始点排序
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+    List<int[]> merged = new ArrayList<>();
+    int[] current = intervals[0];
+    for (int i = 1; i < n; i++) {
+      if (intervals[i][0] <= current[1]) {
+        // 重叠，合并区间
+        current[1] = Math.max(current[1], intervals[i][1]);
+      } else {
+        // 不重叠，添加当前区间并更新
+        merged.add(current);
+        current = intervals[i];
+      }
+    }
+    merged.add(current); // 添加最后一个区间
+
+    // 直接转换为int[][]
+    return merged.toArray(new int[merged.size()][]);
+  }
+
+  public void rotate(int[] nums, int k) {
+    int n = nums.length;
+    int[] temp = Arrays.copyOf(nums, n);
+    for (int i = 0; i < n; i++) {
+      if (i + k < n) {
+        nums[i + k] = temp[i];
+      } else {
+        nums[(i + k) % n] = temp[i];
+      }
+    }
+    log.info(JsonUtil.render(nums));
+  }
+
+  public int[] productExceptSelf(int[] nums) {
+    int n = nums.length;
+    int [] left = new int[n];  left[0] = 1;
+    for (int i = 1; i < n; i++) {
+      left[i] = left[i - 1] * nums[i-1];
+    }
+    int [] right = new int[n];  right[n-1] = 1;
+    for (int i = n-2; i >= 0; i--) {
+      right[i] = right[i+1] * nums[i+1];
+    }
+    int[] ans = new int[n];
+    for (int i = 0; i < n; i++) {
+      ans[i] = left[i] * right[i];
+    }
+    log.info(JsonUtil.render(ans));
+    return ans;
+  }
+
+  public int firstMissingPositive(int[] nums) {
+    Arrays.sort(nums);
+    int[] array = Arrays.stream(nums)
+      .filter(i -> i > 0)
+      .distinct()
+      .toArray();
+    for (int i = 0; i < array.length; i++) {
+      if (array[i] != i + 1) {
+        return i + 1;
+      }
+    }
+    return array.length + 1;
   }
 
 }
