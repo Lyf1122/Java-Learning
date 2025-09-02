@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-class Solution {
+public class Solution {
 
   private static final Logger log = LoggerFactory.getLogger(Solution.class);
 
@@ -359,6 +359,141 @@ class Solution {
       }
     }
     return array.length + 1;
+  }
+
+  static class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int x) {
+        val = x;
+        next = null;
+    }
+ }
+
+  public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+    if (headA == null || headB == null) {
+      return null;
+    }
+    ListNode a = headA;
+    ListNode b = headB;
+    // 令a b定位到对方起点重新走到一遍，则必定在交汇处相遇
+    while (a != b) {
+      if (a != null) {
+        a = a.next;
+        a = headB;
+      }
+      if (b != null) {
+        b = b.next;
+        b = headB;
+      }
+    }
+
+    return a;
+  }
+
+  public ListNode reverseList(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+    ListNode prev = null;
+    ListNode cur = head;
+    while (cur.next != null) {
+      ListNode tempNext = cur.next;
+      cur.next = prev;
+      prev = cur;
+      cur = tempNext;
+    }
+    cur.next = prev;
+    return cur;
+  }
+
+  public boolean isPalindrome(ListNode head) {
+    ListNode slow = head;
+    ListNode fast = head;
+    while (fast.next != null && fast.next.next != null) {
+      slow = slow.next;
+      fast = fast.next.next;
+    }
+    ListNode secondHalf = reverseList(slow);
+    ListNode firstHalf = head;
+    while (secondHalf != null && firstHalf != null) {
+      if (secondHalf.val != firstHalf.val) {
+        return false;
+      }
+      firstHalf = firstHalf.next;
+      secondHalf = secondHalf.next;
+    }
+    return true;
+  }
+
+  public boolean hasCycle(ListNode head) {
+    if (head == null || head.next == null) {
+      return false;
+    }
+    ListNode slow = head;
+    ListNode fast = head;
+    while (fast.next != null && fast.next.next != null) {
+      slow = slow.next;
+      fast = fast.next.next;
+      if (slow == fast) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+    ListNode dummyHead = new ListNode(0);
+    ListNode cur = dummyHead;
+    while (list1 != null && list2 != null) {
+      if (list1.val > list2.val) {
+        cur.next = list2;
+        list2 = list2.next;
+      } else {
+        cur.next = list1;
+        list1 = list1.next;
+      }
+      cur = cur.next;
+    }
+    if (list1 != null) {
+      cur.next = list1;
+    } else  {
+      cur.next = list2;
+    }
+    return dummyHead.next;
+  }
+
+  public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    ListNode dummyHead = new ListNode(0);
+    ListNode cur = dummyHead;
+    int carry = 0;
+    while (l1 != null && l2 != null) {
+      int sum = (l1.val + l2.val + carry) % 10;
+      carry = (l1.val + l2.val + carry) >= 10 ? 1 : 0;
+      cur.next = new ListNode(sum);
+      cur = cur.next;
+      l1 = l1.next;
+      l2 = l2.next;
+    }
+    while (l1 != null) {
+      int sum = (l1.val + carry) % 10;
+      carry = (l1.val + carry) >= 10 ? 1 : 0;
+      cur.next = new ListNode(sum);
+      cur = cur.next;
+      l1 = l1.next;
+    }
+
+    while (l2 != null) {
+      int sum = (l2.val + carry) % 10;
+      carry = (l2.val + carry) >= 10 ? 1 : 0;
+      cur.next = new ListNode(sum);
+      cur = cur.next;
+      l2 = l2.next;
+    }
+    if (carry > 0) {
+      cur.next = new ListNode(carry);
+    }
+    return dummyHead.next;
   }
 
 }

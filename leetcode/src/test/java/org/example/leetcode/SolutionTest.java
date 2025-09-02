@@ -90,4 +90,40 @@ class SolutionTest {
     assertEquals(3, i);
   }
 
+  @Test
+  public void test13() {
+    Solution.ListNode list1 = new Solution.ListNode(1);
+    list1.next = new Solution.ListNode(2);
+    list1.next.next = new Solution.ListNode(3);
+
+    Solution.ListNode list2 = new Solution.ListNode(1);
+    list2.next = new Solution.ListNode(3);
+    list2.next.next = new Solution.ListNode(4);
+    list2.next.next.next = new Solution.ListNode(5);
+
+    Solution.ListNode listNode = solution.mergeTwoLists(list1, list2);
+    while (listNode != null) {
+      System.out.println(listNode.val);
+      listNode = listNode.next;
+    }
+  }
+
+  @Test
+  public void test14() {
+    Solution.ListNode list1 = new Solution.ListNode(3);
+    list1.next = new Solution.ListNode(7);
+//    list1.next.next = new Solution.ListNode(9);
+
+    Solution.ListNode list2 = new Solution.ListNode(9);
+    list2.next = new Solution.ListNode(2);
+//    list2.next.next = new Solution.ListNode(9);
+//    list2.next.next.next = new Solution.ListNode(9);
+
+    Solution.ListNode listNode = solution.addTwoNumbers(list1, list2);
+    while (listNode != null) {
+      System.out.println(listNode.val);
+      listNode = listNode.next;
+    }
+  }
+
 }
