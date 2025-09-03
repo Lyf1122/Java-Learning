@@ -126,4 +126,18 @@ class SolutionTest {
     }
   }
 
+  @Test
+  public void test15() {
+    Solution.ListNode list1 = new Solution.ListNode(1);
+    list1.next = new Solution.ListNode(2);
+    list1.next.next = new Solution.ListNode(3);
+    list1.next.next.next = new Solution.ListNode(4);
+    list1.next.next.next.next = new Solution.ListNode(5);
+    Solution.ListNode listNode = solution.removeNthFromEnd(list1, 2);
+    while (listNode != null) {
+      System.out.println(listNode.val);
+      listNode = listNode.next;
+    }
+  }
+
 }

@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Solution {
 
@@ -492,6 +491,92 @@ public class Solution {
     }
     if (carry > 0) {
       cur.next = new ListNode(carry);
+    }
+    return dummyHead.next;
+  }
+
+  public ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode fast = dummyHead;
+    ListNode slow = dummyHead;
+    for (int i = 1; i <= n; i++) {
+      fast = fast.next;
+    }
+
+    while (fast.next != null) {
+      fast = fast.next;
+      slow = slow.next;
+    }
+
+    slow.next = slow.next.next;
+    return dummyHead.next;
+  }
+
+  public ListNode swapPairs(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode prev = dummyHead;
+    while (prev.next != null && prev.next.next != null) {
+      ListNode first = prev.next;
+      ListNode second = prev.next.next;
+      // swap node
+      prev.next = second;
+      first.next = second.next;
+      second.next = first;
+
+      prev = first;
+    }
+    return dummyHead.next;
+  }
+
+  public ListNode sortList(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+    // 快慢指针找到中间位置
+    ListNode mid = findMid(head);
+    ListNode rightStart = mid.next;
+    mid.next = null;  // 断开链表
+    // 递归
+    ListNode left = sortList(head);
+    ListNode right = sortList(rightStart);
+    return merge(left, right);
+  }
+
+  private ListNode findMid(ListNode head) {
+    ListNode slow = head;
+    ListNode fast = head.next; // 为了确保在偶数个节点时，慢指针指向第一个中间节点。
+
+    while (fast != null && fast.next != null) {
+      slow = slow.next;
+      fast = fast.next.next;
+    }
+    return slow;
+  }
+
+  private ListNode merge(ListNode l1, ListNode l2) {
+    ListNode dummyHead = new ListNode(0);
+    ListNode cur = dummyHead;
+    while (l1 != null && l2 != null) {
+      if (l1.val < l2.val) {
+        cur.next = l1;
+        l1 = l1.next;
+      } else {
+        cur.next = l2;
+        l2 = l2.next;
+      }
+      cur = cur.next;
+    }
+    // while结束后，将剩余的直接连接在后面
+    if (l1 != null) {
+      cur.next = l1;
+    }
+    if (l2 != null) {
+      cur.next = l2;
     }
     return dummyHead.next;
   }
