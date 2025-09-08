@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Solution {
 
@@ -494,6 +493,220 @@ public class Solution {
       cur.next = new ListNode(carry);
     }
     return dummyHead.next;
+  }
+
+  public ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode fast = dummyHead;
+    ListNode slow = dummyHead;
+    for (int i = 1; i <= n; i++) {
+      fast = fast.next;
+    }
+
+    while (fast.next != null) {
+      fast = fast.next;
+      slow = slow.next;
+    }
+
+    slow.next = slow.next.next;
+    return dummyHead.next;
+  }
+
+  public ListNode swapPairs(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+    ListNode dummyHead = new ListNode(0);
+    dummyHead.next = head;
+    ListNode prev = dummyHead;
+    while (prev.next != null && prev.next.next != null) {
+      ListNode first = prev.next;
+      ListNode second = prev.next.next;
+      // swap node
+      prev.next = second;
+      first.next = second.next;
+      second.next = first;
+
+      prev = first;
+    }
+    return dummyHead.next;
+  }
+
+  public ListNode sortList(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+    // 快慢指针找到中间位置
+    ListNode mid = findMid(head);
+    ListNode rightStart = mid.next;
+    mid.next = null;  // 断开链表
+    // 递归
+    ListNode left = sortList(head);
+    ListNode right = sortList(rightStart);
+    return merge(left, right);
+  }
+
+  private ListNode findMid(ListNode head) {
+    ListNode slow = head;
+    ListNode fast = head.next; // 为了确保在偶数个节点时，慢指针指向第一个中间节点。
+
+    while (fast != null && fast.next != null) {
+      slow = slow.next;
+      fast = fast.next.next;
+    }
+    return slow;
+  }
+
+  private ListNode merge(ListNode l1, ListNode l2) {
+    ListNode dummyHead = new ListNode(0);
+    ListNode cur = dummyHead;
+    while (l1 != null && l2 != null) {
+      if (l1.val < l2.val) {
+        cur.next = l1;
+        l1 = l1.next;
+      } else {
+        cur.next = l2;
+        l2 = l2.next;
+      }
+      cur = cur.next;
+    }
+    // while结束后，将剩余的直接连接在后面
+    if (l1 != null) {
+      cur.next = l1;
+    }
+    if (l2 != null) {
+      cur.next = l2;
+    }
+    return dummyHead.next;
+  }
+
+  static class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(int x) {
+      val = x;
+    }
+    TreeNode(int x, TreeNode left, TreeNode right) {
+      val = x;
+      this.left = left;
+      this.right = right;
+    }
+  }
+
+  public List<Integer> inorderTraversal(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    inorder(root, result);
+    return result;
+  }
+
+  public void inorderTraversal2(TreeNode root) {
+    if (root == null) {
+      return;
+    }
+    Stack<TreeNode> stack = new Stack<>();
+    TreeNode cur = root;
+    while (cur != null || !stack.isEmpty()) {
+      while (cur != null) {
+        stack.push(cur);
+        cur = cur.left;
+      }
+      cur = stack.pop();
+      log.info("Pop value = {}", cur.val);
+      cur = cur.right;
+    }
+  }
+
+  public void inorder(TreeNode root, List<Integer> res) {
+    if (root == null) {
+      return;
+    }
+    inorder(root.left, res);
+    res.add(root.val);
+    inorder(root.right, res);
+  }
+
+  public void levelOrder(TreeNode root) {
+    if (root == null) return;
+    Queue<TreeNode> queue = new LinkedList<>();
+    queue.add(root);
+    while (!queue.isEmpty()) {
+      TreeNode poll = queue.poll();
+      log.info("poll value = {}", poll);
+      if (poll.left != null) {
+        queue.add(poll.left);
+      }
+      if (poll.right != null) {
+        queue.add(poll.right);
+      }
+    }
+  }
+
+  public int maxDepth(TreeNode root) {
+    int res = 0;
+    if (root == null) {
+      return res;
+    }
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+  }
+
+  public TreeNode invertTree(TreeNode root) {
+    if (root == null) {
+      return root;
+    }
+    TreeNode left = invertTree(root.left);
+    TreeNode right = invertTree(root.right);
+
+    root.left = right;
+    root.right = left;
+    return root;
+  }
+
+  public boolean isSymmetric(TreeNode root) {
+    if (root == null) {
+      return true;
+    }
+    return isSymmetric(root.left, root.right);
+  }
+
+  static boolean isSymmetric(TreeNode t1, TreeNode t2) {
+    // 判断两棵树是否互为镜像
+    if (t1 == null && t2 == null) return true;
+    if (t1 == null || t2 == null) return false;
+    return t1.val == t2.val && isSymmetric(t1.left, t2.right) && isSymmetric(t1.right, t2.left);
+  }
+
+  public TreeNode sortedArrayToBST(int[] nums) {
+    if (nums == null || nums.length == 0) {
+      return null;
+    }
+    return buildTree(nums, 0, nums.length - 1);
+  }
+
+  static TreeNode buildTree(int[] nums, int left, int right) {
+    if (left > right) return null;
+    int mid = (left + right) / 2;
+    // 中间元素作为根节点
+    TreeNode root = new TreeNode(nums[mid]);
+    root.left = buildTree(nums, left, mid - 1);
+    root.right = buildTree(nums, mid + 1, right);
+    return root;
+  }
+
+  public boolean isValidBST(TreeNode root) {
+    return isValidBST(root, null, null);
+  }
+
+  static boolean isValidBST(TreeNode root, Integer min, Integer max) {
+    if (root == null) return true;
+    boolean checkMin = min == null || root.val > min;
+    boolean checkMax = max == null || root.val < max;
+    if (!checkMin || !checkMax) return false;
+    boolean checkLeft = isValidBST(root.left, min, root.val);
+    boolean checkRight = isValidBST(root.right, root.val, max);
+    return checkLeft && checkRight;
   }
 
 }
