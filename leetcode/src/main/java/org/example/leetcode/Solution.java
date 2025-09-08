@@ -581,4 +581,132 @@ public class Solution {
     return dummyHead.next;
   }
 
+  static class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(int x) {
+      val = x;
+    }
+    TreeNode(int x, TreeNode left, TreeNode right) {
+      val = x;
+      this.left = left;
+      this.right = right;
+    }
+  }
+
+  public List<Integer> inorderTraversal(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    inorder(root, result);
+    return result;
+  }
+
+  public void inorderTraversal2(TreeNode root) {
+    if (root == null) {
+      return;
+    }
+    Stack<TreeNode> stack = new Stack<>();
+    TreeNode cur = root;
+    while (cur != null || !stack.isEmpty()) {
+      while (cur != null) {
+        stack.push(cur);
+        cur = cur.left;
+      }
+      cur = stack.pop();
+      log.info("Pop value = {}", cur.val);
+      cur = cur.right;
+    }
+  }
+
+  public void inorder(TreeNode root, List<Integer> res) {
+    if (root == null) {
+      return;
+    }
+    inorder(root.left, res);
+    res.add(root.val);
+    inorder(root.right, res);
+  }
+
+  public void levelOrder(TreeNode root) {
+    if (root == null) return;
+    Queue<TreeNode> queue = new LinkedList<>();
+    queue.add(root);
+    while (!queue.isEmpty()) {
+      TreeNode poll = queue.poll();
+      log.info("poll value = {}", poll);
+      if (poll.left != null) {
+        queue.add(poll.left);
+      }
+      if (poll.right != null) {
+        queue.add(poll.right);
+      }
+    }
+  }
+
+  public int maxDepth(TreeNode root) {
+    int res = 0;
+    if (root == null) {
+      return res;
+    }
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+  }
+
+  public TreeNode invertTree(TreeNode root) {
+    if (root == null) {
+      return root;
+    }
+    TreeNode left = invertTree(root.left);
+    TreeNode right = invertTree(root.right);
+
+    root.left = right;
+    root.right = left;
+    return root;
+  }
+
+  public boolean isSymmetric(TreeNode root) {
+    if (root == null) {
+      return true;
+    }
+    return isSymmetric(root.left, root.right);
+  }
+
+  static boolean isSymmetric(TreeNode t1, TreeNode t2) {
+    // 判断两棵树是否互为镜像
+    if (t1 == null && t2 == null) return true;
+    if (t1 == null || t2 == null) return false;
+    return t1.val == t2.val && isSymmetric(t1.left, t2.right) && isSymmetric(t1.right, t2.left);
+  }
+
+  public TreeNode sortedArrayToBST(int[] nums) {
+    if (nums == null || nums.length == 0) {
+      return null;
+    }
+    return buildTree(nums, 0, nums.length - 1);
+  }
+
+  static TreeNode buildTree(int[] nums, int left, int right) {
+    if (left > right) return null;
+    int mid = (left + right) / 2;
+    // 中间元素作为根节点
+    TreeNode root = new TreeNode(nums[mid]);
+    root.left = buildTree(nums, left, mid - 1);
+    root.right = buildTree(nums, mid + 1, right);
+    return root;
+  }
+
+  public boolean isValidBST(TreeNode root) {
+    return isValidBST(root, null, null);
+  }
+
+  static boolean isValidBST(TreeNode root, Integer min, Integer max) {
+    if (root == null) return true;
+    boolean checkMin = min == null || root.val > min;
+    boolean checkMax = max == null || root.val < max;
+    if (!checkMin || !checkMax) return false;
+    boolean checkLeft = isValidBST(root.left, min, root.val);
+    boolean checkRight = isValidBST(root.right, root.val, max);
+    return checkLeft && checkRight;
+  }
+
 }
