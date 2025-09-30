@@ -709,4 +709,135 @@ public class Solution {
     return checkLeft && checkRight;
   }
 
+  public List<List<Integer>> permute(int[] nums) {
+    List<List<Integer>> res = new ArrayList<>();
+    backtrack(res, new ArrayList<>(), nums, new boolean[nums.length]);
+    return res;
+  }
+
+  private void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums, boolean[] visited) {
+    if (tempList.size() == nums.length) {
+      result.add(new ArrayList<>(tempList));
+      return;
+    }
+    for (int i = 0; i < nums.length; i++) {
+      if (visited[i]) continue; // 代表已经使用过
+      visited[i] = true;
+      tempList.add(nums[i]);
+      backtrack(result, tempList, nums, visited);
+      tempList.removeLast();
+      visited[i] = false; // 回溯，将最后的元素标记为未使用过
+    }
+  }
+
+  public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> res = new ArrayList<>();
+    backtrack(res, new ArrayList<>(), nums, 0);
+    return res;
+  }
+
+  private void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums, int start) {
+    result.add(new ArrayList<>(tempList));
+    for (int i = start; i< nums.length; i++) {
+      tempList.add(nums[i]);
+      backtrack(result, tempList, nums, i+1);
+      tempList.remove(tempList.size() - 1);
+    }
+  }
+
+  public List<String> letterCombinations(String digits) {
+    Map<Character, String > map = new HashMap<>();
+    map.put('2', "abc");  map.put('3', "def");  map.put('4', "ghi");
+    map.put('5', "jkl");  map.put('6', "mno");  map.put('7', "pqrs");
+    map.put('8', "tuv");  map.put('9', "wxyz");
+    List<String> res = new ArrayList<>();
+    if (digits == null || digits.isEmpty()) {
+      return res;
+    }
+    backtrackCombine(0, digits, new StringBuilder(), res, map);
+    return res;
+  }
+
+  private void backtrackCombine(int index, String digits, StringBuilder current, List<String> result, Map<Character, String> map) {
+    if (index == digits.length()) {
+      result.add(current.toString());
+      return;
+    }
+    char digit = digits.charAt(index);
+    String letters = map.get(digit);
+    for (char c : letters.toCharArray()) {
+      current.append(c);
+      backtrackCombine(index + 1, digits, current, result, map);
+      current.deleteCharAt(current.length() - 1);
+    }
+  }
+
+  public List<List<Integer>> combinationSum(int[] candidates, int target) {
+    List<List<Integer>> result = new ArrayList<>();
+    List<Integer> path = new ArrayList<>();
+    Arrays.sort(candidates);
+    backtrackCombinationSum(result, path, target, candidates, 0);
+    return result;
+  }
+
+  void backtrackCombinationSum(List<List<Integer>> result, List<Integer> path, int target, int[] candidates, int start) {
+    if (target == 0) {
+      result.add(new ArrayList<>(path));  // 必须创建副本，否则指向的是path的引用，导致所有path均为空
+      return;
+    }
+    for (int i = start; i < candidates.length; i++){
+      if (candidates[i] > target) break;
+
+      path.add(candidates[i]);
+      // 传入的参数应为target - candidates[i] 而不能直接将 target -= candidates[i] 传递
+      backtrackCombinationSum(result, path, target - candidates[i], candidates, i); // 不是i+1 代表可以重复使用当前数字
+      path.removeLast();
+    }
+  }
+
+  public List<List<String>> partition(String s) {
+    List<List<String>> result = new ArrayList<>();
+    backTrackPartition(0, new ArrayList<>(), result, s);
+    return result;
+  }
+
+  void backTrackPartition(int start, List<String> path, List<List<String>> result, String s) {
+    if (start == s.length()) {
+      // 说明已经处理完整个字符串(子串递归）
+      result.add(new ArrayList<>(path));
+      return;
+    }
+    for (int end = start; end < s.length(); end++) {
+      if (isMirror(s, start, end)) {
+        // 如果当前子串是回文，递归继续处理
+        String sub = s.substring(start, end + 1);
+        path.add(sub);
+        backTrackPartition(end + 1, path, result, s);
+        path.removeLast();
+      }
+    }
+  }
+
+  boolean isMirror(String s, int left, int right) {
+    while (left < right) {
+      if (s.charAt(left) != s.charAt(right)) {
+        return false;
+      }
+      left++;
+      right--;
+    }
+    return true;
+  }
+
+  public int maxProfit(int[] prices) {
+    int length = prices.length;
+    if (length < 2) return 0;
+    int minCost = Integer.MAX_VALUE, profit = 0;
+    for (int price : prices) {
+      minCost = Math.min(price, minCost);
+      profit = Math.max(profit, price - minCost);
+    }
+    return profit;
+  }
+
 }

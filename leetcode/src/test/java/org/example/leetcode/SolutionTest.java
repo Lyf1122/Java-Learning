@@ -1,5 +1,6 @@
 package org.example.leetcode;
 
+import org.example.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -138,6 +139,29 @@ class SolutionTest {
       System.out.println(listNode.val);
       listNode = listNode.next;
     }
+  }
+
+  @Test
+  public void test16() {
+    int[] nums = {1,2,3};
+    List<List<Integer>> subsets = solution.subsets(nums);
+    System.out.println(JsonUtil.render(subsets));
+  }
+
+  @Test
+  public void test17() {
+    int[] candidates = {2,3,6,7};
+    int target = 7;
+    List<List<Integer>> lists = solution.combinationSum(candidates, target);
+    System.out.println(JsonUtil.render(lists));
+  }
+
+  @Test
+  public void test18() {
+    String s = "aab";
+//    System.out.println(s.substring(0, 2));
+    List<List<String>> partition = solution.partition(s);
+    System.out.println(JsonUtil.render(partition));
   }
 
 }
