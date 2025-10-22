@@ -1,0 +1,54 @@
+{
+  "application": {
+    "name": "account-service",
+    "version": "1.0.0",
+    "publish": ["account-api"],
+    "subscribe": []
+  },
+  "apis": [
+    {
+      "name": "AccountApi",
+      "path": "/api/v1/accounts",
+      "protocol": "HTTP",
+      "operations": [
+
+        {
+          "name": "createAccount",
+          "path": "/",
+          "mappingType": "POST",
+          "request": {
+            "type": "object",
+            "name": "CreateAccountRequest",
+            "properties": {
+              "username": { "type": "string" },
+              "email": { "type": "string" },
+              "password": { "type": "string" }
+            }
+          },
+          "response": {
+            "type": "object",
+            "name": "AccountResponse",
+            "properties": {
+              "id": { "type": "long" },
+              "username": { "type": "string" },
+              "email": { "type": "string" },
+              "createdAt": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        {
+          "name": "getAccount",
+          "path": "/{id}",
+          "mappingType": "GET",
+          "requestParams": [
+            { "name": "id", "type": "long", "in": "path", "required": true }
+          ],
+          "response": {
+            "type": "object",
+            "name": "AccountResponse"
+          }
+        }
+      ]
+    }
+  ]
+}
