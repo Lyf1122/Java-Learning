@@ -10,10 +10,10 @@
   <packaging>pom</packaging>
   <modules>
     <module>design-pattern</module>
-    <module>redis-demo</module>
     <module>leetcode</module>
     <module>code-generate</module>
     <module>common-lib</module>
+    <module>simple-registry</module>
   </modules>
 
   <dependencyManagement>
