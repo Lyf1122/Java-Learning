@@ -1,0 +1,26 @@
+-- 用户与订单表结构 (MySQL)
+
+DROP TABLE IF EXISTS `orders`;
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` VARCHAR(64) NOT NULL COMMENT '用户名',
+  `email` VARCHAR(128) NOT NULL COMMENT '邮箱',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+CREATE TABLE `orders` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user_id` BIGINT UNSIGNED NOT NULL COMMENT '用户ID',
+  `total` DECIMAL(10,2) NOT NULL COMMENT '订单总金额',
+  `create_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_time` (`user_id`,`create_at`),
+  CONSTRAINT `fk_orders_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
+
+-- 示例查询: 根据用户ID获取最近5条订单
+-- SELECT * FROM orders WHERE user_id = ? ORDER BY create_at DESC LIMIT 5;

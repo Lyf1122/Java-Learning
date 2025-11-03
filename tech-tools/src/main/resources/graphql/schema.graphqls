@@ -1,0 +1,17 @@
+type Order {
+  id: ID!
+  userId: ID!
+  total: Float!
+  createAt: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  orders: [Order!]!
+}
+
+type Query {
+  user(userId: ID!): User
+}

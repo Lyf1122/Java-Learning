@@ -14,6 +14,7 @@
     <module>code-generate</module>
     <module>common-lib</module>
     <module>simple-registry</module>
+    <module>tech-tools</module>
   </modules>
 
   <dependencyManagement>
