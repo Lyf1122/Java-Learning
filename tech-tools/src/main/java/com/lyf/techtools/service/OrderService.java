@@ -2,6 +2,7 @@ package com.lyf.techtools.service;
 
 import com.lyf.techtools.entity.Order;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface OrderService {
@@ -11,5 +12,5 @@ public interface OrderService {
   Optional<Order> getOrderById(Long id);
   List<Order> listOrders();
   List<Order> listOrdersByUser(Long userId);
+  Map<String, List<Order>> findByUserIds(List<String> userIds);
 }
-

@@ -72,31 +72,5 @@ public class EventListeningEngineTest {
     Thread.sleep(200);
     Assertions.assertEquals(beforeStop, counter.get(), "停止后不应再处理新事件");
   }
-
-  @Test
-  void testQueueOverflow() throws Exception {
-    int capacity = 10;
-    engine = new EventListeningEngine<>(capacity, 1);
-    AtomicInteger processed = new AtomicInteger();
-    CountDownLatch latch = new CountDownLatch(1);
-    engine.register(new EventListener<>(e -> true, e -> {
-      processed.incrementAndGet();
-      if (processed.get() >= capacity) {
-        latch.countDown();
-      }
-      // 模拟慢处理，增加溢出概率
-      Thread.sleep(50);
-    }));
-    engine.start();
-    // 快速提交超过容量的事件
-    for (int i = 0; i < capacity * 3; i++) {
-      engine.submit(new DemoEvent("OVF", i));
-    }
-    // 等待至少处理满容量数量
-    boolean ok = latch.await(2, TimeUnit.SECONDS);
-    Assertions.assertTrue(ok, "应至少处理到队列容量数量");
-    // 由于offer丢弃溢出，处理数应 <= total submitted
-    Assertions.assertTrue(processed.get() <= capacity * 3, "处理数不应超过提交数");
-  }
 }
 

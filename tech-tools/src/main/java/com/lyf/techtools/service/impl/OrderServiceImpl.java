@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -63,5 +65,19 @@ public class OrderServiceImpl implements OrderService {
   public List<Order> listOrdersByUser(Long userId) {
     return orderRepository.findByUserIdOrderByCreateAtDesc(userId);
   }
-}
 
+  @Override
+  @Transactional(readOnly = true)
+  public Map<String, List<Order>> findByUserIds(List<String> userIds) {
+    if (userIds == null || userIds.isEmpty()) {
+      return Map.of();
+    }
+    List<Long> ids = userIds.stream()
+        .filter(id -> id != null && !id.isBlank())
+        .map(Long::valueOf)
+        .collect(Collectors.toList());
+    List<Order> orders = orderRepository.findByUserIdInOrderByCreateAtDesc(ids);
+    return orders.stream()
+        .collect(Collectors.groupingBy(o -> String.valueOf(o.getUserId()), Collectors.toList()));
+  }
+}

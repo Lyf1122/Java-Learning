@@ -10,4 +10,5 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
   List<Order> findTop5ByUserIdOrderByCreateAtDesc(Long userId);
   List<Order> findByUserIdOrderByCreateAtDesc(Long userId);
+  List<Order> findByUserIdInOrderByCreateAtDesc(List<Long> userIds);
 }

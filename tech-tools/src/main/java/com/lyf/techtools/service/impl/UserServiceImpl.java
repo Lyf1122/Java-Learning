@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -65,5 +66,18 @@ public class UserServiceImpl implements UserService {
   @Transactional(readOnly = true)
   public List<User> listUsers() {
     return userRepository.findAll();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<User> findByIds(List<String> userIds) {
+    if (userIds == null || userIds.isEmpty()) {
+      return List.of();
+    }
+    List<Long> ids = userIds.stream()
+        .filter(id -> id != null && !id.isBlank())
+        .map(Long::valueOf)
+        .collect(Collectors.toList());
+    return userRepository.findAllById(ids);
   }
 }
