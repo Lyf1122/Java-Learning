@@ -30,4 +30,9 @@ public class ApplicationConfiguration {
   public RegistryProxyIns regProxyIns(@Autowired ClusterConfig config) {
     return () -> RegistryProxy.ins(config.rsMode());
   }
+
+  @Bean
+  public ApplicationProperties applicationProperties(@Autowired ClusterConfig clusterConfig) {
+    return ApplicationProperties.ins().config(clusterConfig);
+  }
 }

@@ -26,10 +26,10 @@ public class SimpleRegistryClient extends Thread{
   private boolean isOpen;
   private long lastPingTs = System.currentTimeMillis();
 
-  public SimpleRegistryClient(String server, int port, ClusterConfig config) {
+  public SimpleRegistryClient(ClusterConfig config, String server, int port) {
+    this.config = config;
     this.server = server;
     this.port = port;
-    this.config = config;
   }
 
   @Override

@@ -1,9 +1,21 @@
 package com.lyf.registrymonitor.proxy;
 
+import com.lyf.registrymonitor.configs.ClusterConfig;
 import com.lyf.registrymonitor.msg.MsgConsumer;
 import org.apache.commons.lang3.StringUtils;
 
 public interface RegistryProxy {
+
+  static RegistryProxy of(ClusterConfig config) {
+    RegistryProxy px = null;
+    if(config != null && StringUtils.isNotBlank(config.rsMode())) {
+      switch (config.rsMode()) {
+        case "simple" -> px = SimpleRegistryProxy.reset(config);
+        case "kafka" -> throw new UnsupportedOperationException();
+      }
+    }
+    return px;
+  }
 
   static RegistryProxy ins(String mode) {
     RegistryProxy px = null;

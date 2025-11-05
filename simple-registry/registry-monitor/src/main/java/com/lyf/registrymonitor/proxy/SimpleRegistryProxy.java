@@ -1,6 +1,8 @@
 package com.lyf.registrymonitor.proxy;
 
+import com.lyf.registrymonitor.configs.ClusterConfig;
 import com.lyf.registrymonitor.msg.MsgConsumer;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,32 @@ public class SimpleRegistryProxy implements RegistryProxy{
 
   public static SimpleRegistryProxy ins() {
     return ins;
+  }
+
+  static SimpleRegistryProxy of(ClusterConfig config) {
+    if(StringUtils.isAnyBlank(config.mqServer())) {
+      throw new IllegalArgumentException("Invalid server to create SimpleRegistryProxy.");
+    }
+    String server = config.mqServer();
+    String[] ss = StringUtils.split(server, ":");
+    String _server; int _port = REMOTE_PORT;
+    switch (ss.length) {
+      case 1 -> _server = ss[0];
+      case 2 -> {
+        _server = ss[0];
+        _port = Integer.parseInt(ss[1]);
+      }
+      default -> throw new IllegalArgumentException("Invalid server to create SimpleRegistryProxy, " + server);
+    }
+    return new SimpleRegistryProxy(new SimpleRegistryClient(config, _server, _port));
+  }
+
+  public static SimpleRegistryProxy reset(ClusterConfig config) {
+    if(ins != null && ins().up) {
+      ins.disconnect();
+    }
+    ins = SimpleRegistryProxy.of(config);
+    return ins();
   }
 
   @Override
