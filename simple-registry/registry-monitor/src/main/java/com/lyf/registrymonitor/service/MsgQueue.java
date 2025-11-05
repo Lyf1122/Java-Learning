@@ -16,8 +16,6 @@ public class MsgQueue<T> {
   private final Queue<String> queue = new ConcurrentLinkedQueue<>(new LinkedList<>());
 
   public final static MsgQueue<String> INFO = new MsgQueue<>(10,2);
-//  public final static MsgQueue<EventDto> EVENT = new MsgQueue<>();
-//  public final static MsgQueue<TaskDto> TASK = new MsgQueue<>();
   public final static MsgQueue<String> CONFIG = new MsgQueue<>();
 
   private final static int MAX = 15000;
