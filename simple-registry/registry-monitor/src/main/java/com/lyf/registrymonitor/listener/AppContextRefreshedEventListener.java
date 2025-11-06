@@ -5,6 +5,7 @@ import com.lyf.lib.util.HttpUtilFactory;
 import com.lyf.registrymonitor.ApplicationProperties;
 import com.lyf.registrymonitor.configs.ClusterConfig;
 import com.lyf.registrymonitor.msg.MsgConsumer;
+import com.lyf.registrymonitor.proxy.SimpleRegistryProxy;
 import com.lyf.registrymonitor.proxy.RegistryProxy;
 import com.lyf.registrymonitor.service.MsgQueue;
 import org.slf4j.Logger;
@@ -35,8 +36,18 @@ public class AppContextRefreshedEventListener implements ApplicationListener<Con
     logger.info("===== >> initRegistryProxy ::: " );
     ApplicationProperties properties = ApplicationProperties.ins();
     ClusterConfig config = properties.config();
-    RegistryProxy registryProxy = RegistryProxy.ins(config.rsMode());
-    logger.info("===== >> >> EsonaClusterConfig ::: {}", config );
+    if(config == null) {
+      logger.warn("ClusterConfig not initialized, skip registry proxy init.");
+      return;
+    }
+    RegistryProxy registryProxy = null;
+    String mode = config.rsMode();
+    if("simple".equalsIgnoreCase(mode)) {
+      registryProxy = SimpleRegistryProxy.reset(config);
+    } else {
+      registryProxy = RegistryProxy.ins(mode);
+    }
+    logger.info("===== >> >> ClusterConfig ::: {}", config );
 
     if (registryProxy != null) {
       if (!registryProxy.isUp()) {
@@ -44,6 +55,8 @@ public class AppContextRefreshedEventListener implements ApplicationListener<Con
       }
       registryProxy.addMsgConsumer(new String[]{ "^.*$" }, (MsgConsumer<String>) msg -> logger.info("Receiving unknown message: " + msg));
       registryProxy.addMsgConsumer(new String[]{ "^\\[INFO\\].*$" }, (MsgConsumer<String>) MsgQueue.INFO::add);
+    } else {
+      logger.warn("RegistryProxy is null for mode={}, initialization skipped.", mode);
     }
   }
 

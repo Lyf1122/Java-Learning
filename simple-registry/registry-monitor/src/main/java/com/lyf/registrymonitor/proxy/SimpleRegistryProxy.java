@@ -32,35 +32,23 @@ public class SimpleRegistryProxy implements RegistryProxy{
     }));
   }
 
-  public static SimpleRegistryProxy ins() {
+  public static synchronized SimpleRegistryProxy reset(ClusterConfig cfg) {
+    if(ins == null && cfg != null) {
+      String server = cfg.mqServer();
+      String host = server;
+      int port = REMOTE_PORT;
+      if(server != null && server.contains(":")) {
+        String[] arr = server.split(":");
+        host = arr[0];
+        try { port = Integer.parseInt(arr[1]); } catch (NumberFormatException ignored) {}
+      }
+      SimpleRegistryClient client = new SimpleRegistryClient(cfg, host, port);
+      ins = new SimpleRegistryProxy(client);
+    }
     return ins;
   }
 
-  static SimpleRegistryProxy of(ClusterConfig config) {
-    if(StringUtils.isAnyBlank(config.mqServer())) {
-      throw new IllegalArgumentException("Invalid server to create SimpleRegistryProxy.");
-    }
-    String server = config.mqServer();
-    String[] ss = StringUtils.split(server, ":");
-    String _server; int _port = REMOTE_PORT;
-    switch (ss.length) {
-      case 1 -> _server = ss[0];
-      case 2 -> {
-        _server = ss[0];
-        _port = Integer.parseInt(ss[1]);
-      }
-      default -> throw new IllegalArgumentException("Invalid server to create SimpleRegistryProxy, " + server);
-    }
-    return new SimpleRegistryProxy(new SimpleRegistryClient(config, _server, _port));
-  }
-
-  public static SimpleRegistryProxy reset(ClusterConfig config) {
-    if(ins != null && ins().up) {
-      ins.disconnect();
-    }
-    ins = SimpleRegistryProxy.of(config);
-    return ins();
-  }
+  public static SimpleRegistryProxy ins() { return ins; }
 
   @Override
   public void get(String msg) {
